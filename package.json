@@ -1,0 +1,35 @@
+{
+  "name": "actions-setup-canvas",
+  "version": "1.0.0",
+  "description": "A GitHub Action that sets up canvas build environment.",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint common.js index.js post.js",
+    "package": "ncc build index.js -mqo dist/main; ncc build post.js -mqo dist/post",
+    "format": "prettier --trailing-comma es5 --single-quote --write index.js post.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vibeus/actions-setup-canvas.git"
+  },
+  "author": "Jiulong Wang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vibeus/actions-setup-canvas/issues"
+  },
+  "homepage": "https://github.com/vibeus/actions-setup-canvas#readme",
+  "dependencies": {
+    "@actions/cache": "^0.2.1",
+    "@actions/core": "^1.2.4",
+    "@actions/exec": "^1.0.4",
+    "@actions/glob": "^0.1.0",
+    "@actions/io": "^1.0.2",
+    "@actions/tool-cache": "^1.5.5"
+  },
+  "devDependencies": {
+    "@zeit/ncc": "^0.22.3",
+    "eslint": "^7.4.0",
+    "jest": "^26.1.0",
+    "prettier": "^2.0.5"
+  }
+}

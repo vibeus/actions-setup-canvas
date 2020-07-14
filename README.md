@@ -1,2 +1,2 @@
-# actions-setup-canvas
-A GitHub Action that setup canvas build environment.
+# Setup Canvas Action
+A GitHub Action that sets up canvas build environment.

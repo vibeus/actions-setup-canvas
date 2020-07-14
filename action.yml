@@ -1,0 +1,18 @@
+name: 'Set up Canvas Build'
+description: 'Set up canvas build environment.'
+inputs:
+  emsdk-version:
+    description: 'Emscripten SDK version.'
+    required: true
+    default: '1.39.16'
+  canvas-home:
+    description: 'Directory of canvas.'
+    required: true
+    default: 'apps/canvas'
+outputs:
+  emsdk-path:
+    description: 'Path of emsdk.'
+runs:
+  using: 'node12'
+  main: 'dist/main/index.js'
+  post: 'dist/post/index.js'
