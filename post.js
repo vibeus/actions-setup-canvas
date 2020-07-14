@@ -15,12 +15,12 @@ async function saveEmsdkSysLibs() {
     return;
   }
 
-  const hashKey = hashFiles(`${EMSDK_SYS_CACHE}/**/*`);
+  const hashKey = await hashFiles(`${EMSDK_SYS_CACHE}/**/*`);
   const key = restoreKey + hashKey;
 
   const cacheKey = core.getState(EMSDK_SYS_CACHE_KEY_STATE);
   if (key !== cacheKey) {
-    const cacheId = cache.saveCache([EMSDK_SYS_CACHE], key);
+    const cacheId = await cache.saveCache([EMSDK_SYS_CACHE], key);
     core.info(`Saved emsdk syscache using key: ${key}; cacheId: ${cacheId}`);
   } else {
     core.info(
