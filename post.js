@@ -33,7 +33,9 @@ async function run() {
   try {
     await saveEmsdkSysLibs();
   } catch (err) {
-    core.setFailed(err.message);
+    // FIXME(jiulongw): seems like GitHub Action cache logic requires lock-file like key.
+    // For now ignore error if cache key conflicts.
+    core.info(`[WARN] ${err.message}`);
   }
 }
 
