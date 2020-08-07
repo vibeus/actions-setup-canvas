@@ -3,11 +3,11 @@ description: 'Set up canvas build environment.'
 inputs:
   emsdk-version:
     description: 'Emscripten SDK version.'
-    required: true
-    default: '1.39.16'
+    required: false
+    default: ''
   canvas-home:
     description: 'Directory of canvas.'
-    required: true
+    required: false
     default: 'apps/canvas'
 outputs:
   emsdk-path:

@@ -189,7 +189,9 @@ async function run() {
     await setupYarn(inputs);
     await setupClang();
     await setupPython(inputs);
-    await setupEmsdk(inputs);
+    if (inputs.emsdkVersion) {
+      await setupEmsdk(inputs);
+    }
     await setupLibs(inputs);
   } catch (err) {
     core.setFailed(err.message);
