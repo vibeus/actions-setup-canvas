@@ -9,6 +9,10 @@ inputs:
     description: 'Directory of canvas.'
     required: false
     default: 'apps/canvas'
+  arch:
+    description: 'OS and Arch to build.'
+    required: false
+    default: 'ALL'
 outputs:
   emsdk-path:
     description: 'Path of emsdk.'

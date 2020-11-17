@@ -151,12 +151,16 @@ async function setupEmsdk(inputs) {
 
 async function setupLibs(inputs) {
   const canvasPath = path.join(WORKSPACE_ROOT, inputs.canvasHome);
-  const restoreKey = `${os.platform()}-canvas-libs-`;
-
   const cacheDir = path.join(canvasPath, 'libs');
-  const cacheKey = await cache.restoreCache([cacheDir], restoreKey, [
-    restoreKey,
-  ]);
+
+  const restoreKey = `canvas-libs-${inputs.arch}-`;
+  const hashKey =
+    inputs.arch === 'ALL'
+      ? await hashFiles(`${cacheDir}/**/ETAG`)
+      : await hashFiles(`${cacheDir}/**/${inputs.arch}/*/ETAG`);
+  const key = restoreKey + hashKey;
+
+  const cacheKey = await cache.restoreCache([cacheDir], key, [restoreKey]);
   if (cacheKey) {
     core.info(`Restored libs cache from cache key: ${cacheKey}`);
   } else {
@@ -164,10 +168,9 @@ async function setupLibs(inputs) {
   }
 
   // still need to sync to get latest libs
-  await exec.exec('./sync-libs', [], { cwd: canvasPath });
-
-  const hashKey = await hashFiles(`${cacheDir}/**/ETAG`);
-  const key = restoreKey + hashKey;
+  await exec.exec('./sync-libs', ['--arch', inputs.arch, '--purge'], {
+    cwd: canvasPath,
+  });
 
   if (key !== cacheKey) {
     await cache.saveCache([cacheDir], key);
@@ -184,6 +187,7 @@ async function run() {
     const inputs = {
       emsdkVersion: core.getInput('emsdk-version'),
       canvasHome: core.getInput('canvas-home'),
+      arch: core.getInput('arch'),
     };
 
     await setupYarn(inputs);

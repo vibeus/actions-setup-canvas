@@ -31,7 +31,15 @@ async function saveEmsdkSysLibs() {
 
 async function run() {
   try {
-    await saveEmsdkSysLibs();
+    const inputs = {
+      emsdkVersion: core.getInput('emsdk-version'),
+      canvasHome: core.getInput('canvas-home'),
+      arch: core.getInput('arch'),
+    };
+
+    if (inputs.emsdkVersion) {
+      await saveEmsdkSysLibs();
+    }
   } catch (err) {
     // FIXME(jiulongw): seems like GitHub Action cache logic requires lock-file like key.
     // For now ignore error if cache key conflicts.
