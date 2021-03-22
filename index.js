@@ -55,21 +55,6 @@ async function setupYarn(inputs) {
   }
 }
 
-async function setupClang() {
-  await exec.exec(
-    'sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-9 10'
-  );
-  await exec.exec(
-    'sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-9 10'
-  );
-  await exec.exec('sudo update-alternatives --set c++ /usr/bin/clang++-9');
-  await exec.exec(
-    'sudo update-alternatives --set clang-format /usr/bin/clang-format-9'
-  );
-
-  core.info('Done setting up clang.');
-}
-
 async function setupPython(inputs) {
   const canvasPath = path.join(WORKSPACE_ROOT, inputs.canvasHome);
   const restoreKey = `${os.platform()}-pip-canvas-`;
@@ -191,7 +176,6 @@ async function run() {
     };
 
     await setupYarn(inputs);
-    await setupClang();
     await setupPython(inputs);
     if (inputs.emsdkVersion) {
       await setupEmsdk(inputs);
