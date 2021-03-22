@@ -4,12 +4,11 @@ const cache = require('@actions/cache');
 const exec = require('@actions/exec');
 const os = require('os');
 const path = require('path');
-const tc = require('@actions/tool-cache');
 
 const {
-  HOME,
   WORKSPACE_ROOT,
   EMSDK_HOME,
+  EMSDK_VERSION,
   EMSDK_SYS_CACHE,
   EMSDK_SYS_CACHE_KEY_STATE,
   EMSDK_SYS_CACHE_RESTORE_KEY_STATE,
@@ -45,12 +44,19 @@ async function setupYarn(inputs) {
   // still need to install since cache only affect yarn's internal cache.
   await exec.exec('yarn', ['install'], { cwd: canvasPath });
 
-  if (key !== cacheKey) {
-    await cache.saveCache([cacheDir], key);
-    core.info(`Saved yarn cache using key: ${key}`);
-  } else {
+  try {
+    if (key !== cacheKey) {
+      await cache.saveCache([cacheDir], key);
+      core.info(`Saved yarn cache using key: ${key}`);
+    } else {
+      core.info(
+        `Skipped saving yarn cache because key matches cacheKey: ${cacheKey}.`
+      );
+    }
+  } catch (err) {
+    // multiple concurrent job may save cache using same key. Ok to fail here.
     core.info(
-      `Skipped saving yarn cache because key matches cacheKey: ${cacheKey}.`
+      `[WARN] Save cache failed. Ignore and continue... Details: ${err}`
     );
   }
 }
@@ -84,39 +90,10 @@ async function setupPython(inputs) {
   }
 }
 
-async function setupEmsdk(inputs) {
-  const restoreKey = `${os.platform()}-emsdk-${inputs.emsdkVersion}`;
-
-  const cacheKey = await cache.restoreCache([EMSDK_HOME], restoreKey, [
-    restoreKey,
-  ]);
-  if (cacheKey) {
-    core.info(`Restored emsdk cache from cache key: ${cacheKey}`);
-  } else {
-    core.info(`Did not find emsdk cache using restore key: ${restoreKey}`);
-
-    const downloaded = await tc.downloadTool(
-      'https://github.com/emscripten-core/emsdk/archive/master.zip'
-    );
-    await tc.extractZip(downloaded, HOME);
-    await exec.exec('./emsdk', ['install', inputs.emsdkVersion], {
-      cwd: EMSDK_HOME,
-    });
-
-    const cacheId = await cache.saveCache([EMSDK_HOME], restoreKey);
-    core.info(
-      `Saved emsdk cache using key: ${restoreKey}; cacheId: ${cacheId}`
-    );
-  }
-
-  await exec.exec('./emsdk', ['activate', inputs.emsdkVersion], {
-    cwd: EMSDK_HOME,
-  });
+async function setupEmsdk() {
   core.setOutput('emsdk-path', EMSDK_HOME);
 
-  const sysRestoreKey = `${os.platform()}-emsdk-${
-    inputs.emsdkVersion
-  }-syscache-`;
+  const sysRestoreKey = `${os.platform()}-emsdk-${EMSDK_VERSION}-syscache-`;
 
   core.saveState(EMSDK_SYS_CACHE_RESTORE_KEY_STATE, sysRestoreKey);
   const sysCacheKey = await cache.restoreCache(
@@ -170,15 +147,14 @@ async function setupLibs(inputs) {
 async function run() {
   try {
     const inputs = {
-      emsdkVersion: core.getInput('emsdk-version'),
       canvasHome: core.getInput('canvas-home'),
       arch: core.getInput('arch'),
     };
 
     await setupYarn(inputs);
     await setupPython(inputs);
-    if (inputs.emsdkVersion) {
-      await setupEmsdk(inputs);
+    if (EMSDK_VERSION) {
+      await setupEmsdk();
     }
     await setupLibs(inputs);
   } catch (err) {

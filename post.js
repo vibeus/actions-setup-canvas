@@ -2,6 +2,7 @@ const core = require('@actions/core');
 const cache = require('@actions/cache');
 
 const {
+  EMSDK_VERSION,
   EMSDK_SYS_CACHE,
   EMSDK_SYS_CACHE_KEY_STATE,
   EMSDK_SYS_CACHE_RESTORE_KEY_STATE,
@@ -31,13 +32,7 @@ async function saveEmsdkSysLibs() {
 
 async function run() {
   try {
-    const inputs = {
-      emsdkVersion: core.getInput('emsdk-version'),
-      canvasHome: core.getInput('canvas-home'),
-      arch: core.getInput('arch'),
-    };
-
-    if (inputs.emsdkVersion) {
+    if (EMSDK_VERSION) {
       await saveEmsdkSysLibs();
     }
   } catch (err) {
