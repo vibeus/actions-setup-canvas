@@ -1,10 +1,6 @@
 name: 'Set up Canvas Build'
 description: 'Set up canvas build environment.'
 inputs:
-  emsdk-version:
-    description: 'Emscripten SDK version.'
-    required: false
-    default: ''
   canvas-home:
     description: 'Directory of canvas.'
     required: false
