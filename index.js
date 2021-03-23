@@ -80,12 +80,19 @@ async function setupPython(inputs) {
     cwd: canvasPath,
   });
 
-  if (key !== cacheKey) {
-    await cache.saveCache([cacheDir], key);
-    core.info(`Saved pip cache using key: ${key}`);
-  } else {
+  try {
+    if (key !== cacheKey) {
+      await cache.saveCache([cacheDir], key);
+      core.info(`Saved pip cache using key: ${key}`);
+    } else {
+      core.info(
+        `Skipped saving pip cache because key matches cacheKey: ${cacheKey}.`
+      );
+    }
+  } catch (err) {
+    // multiple concurrent job may save cache using same key. Ok to fail here.
     core.info(
-      `Skipped saving pip cache because key matches cacheKey: ${cacheKey}.`
+      `[WARN] Save cache failed. Ignore and continue... Details: ${err}`
     );
   }
 }
@@ -134,12 +141,19 @@ async function setupLibs(inputs) {
     cwd: canvasPath,
   });
 
-  if (key !== cacheKey) {
-    await cache.saveCache([cacheDir], key);
-    core.info(`Saved libs cache using key: ${key}`);
-  } else {
+  try {
+    if (key !== cacheKey) {
+      await cache.saveCache([cacheDir], key);
+      core.info(`Saved libs cache using key: ${key}`);
+    } else {
+      core.info(
+        `Skipped saving libs cache because key matches cacheKey: ${cacheKey}`
+      );
+    }
+  } catch (err) {
+    // multiple concurrent job may save cache using same key. Ok to fail here.
     core.info(
-      `Skipped saving libs cache because key matches cacheKey: ${cacheKey}`
+      `[WARN] Save cache failed. Ignore and continue... Details: ${err}`
     );
   }
 }
