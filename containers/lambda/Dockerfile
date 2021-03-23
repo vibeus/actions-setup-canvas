@@ -31,5 +31,7 @@ RUN . ~/.nvm/nvm.sh && nvm install 14 && nvm use 14
 ENV PATH=/root/.nvm/versions/node/v14.16.0/bin:$PATH
 RUN npm install -g yarn
 
+RUN pip install awscli
+
 ENV CC=clang
 ENV CXX=clang++
