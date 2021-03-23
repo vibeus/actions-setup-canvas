@@ -40,5 +40,7 @@ RUN update-alternatives --set pip /usr/bin/pip3
 
 RUN curl -fsSL https://github.com/cristianadam/ccache/releases/download/v3.7.7/Linux.tar.xz | tar -C /usr/bin -xJf -
 
+RUN pip install awscli
+
 ENV ANDROID_HOME=$ANDROID_HOME
 ENV NDK_ROOT=$ANDROID_HOME/ndk/$NDK_VERSION
