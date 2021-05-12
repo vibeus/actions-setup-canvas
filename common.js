@@ -8,7 +8,7 @@ const glob = require('@actions/glob');
 
 const HOME = process.env.HOME;
 const WORKSPACE_ROOT = process.env.GITHUB_WORKSPACE;
-const EMSDK_HOME = '/opt/emsdk-master';
+const EMSDK_HOME = '/opt/emsdk-main';
 const EMSDK_VERSION = process.env.EMSDK_VERSION;
 const EMSDK_SYS_CACHE = path.join(EMSDK_HOME, 'upstream/emscripten/cache');
 
