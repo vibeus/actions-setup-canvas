@@ -38,7 +38,8 @@ RUN update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
 RUN update-alternatives --set python /usr/bin/python3
 RUN update-alternatives --set pip /usr/bin/pip3
 
-RUN curl -fsSL https://github.com/cristianadam/ccache/releases/download/v3.7.7/Linux.tar.xz | tar -C /usr/bin -xJf -
+ARG CCACHE_VERSION=4.2.1
+RUN curl -fsSL https://github.com/cristianadam/ccache/releases/download/v${CCACHE_VERSION}/Linux.tar.xz | tar -C /usr/bin -xJf -
 
 RUN pip install awscli
 
