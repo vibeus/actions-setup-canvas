@@ -1,7 +1,8 @@
 FROM ubuntu:20.04
 
-ARG EMSDK_VERSION=2.0.13
+ARG EMSDK_VERSION=2.0.20
 ARG NODE_VERSION=node_14.x
+ARG CCACHE_VERSION=4.2.1
 
 # Install 3rd party repositories
 RUN apt-get update && apt-get -y install \
@@ -34,12 +35,12 @@ RUN update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
 RUN update-alternatives --set python /usr/bin/python3
 RUN update-alternatives --set pip /usr/bin/pip3
 
-RUN curl -fsSL https://github.com/cristianadam/ccache/releases/download/v3.7.7/Linux.tar.xz | tar -C /usr/bin -xJf -
+RUN curl -fsSL https://github.com/cristianadam/ccache/releases/download/v${CCACHE_VERSION}/Linux.tar.xz | tar -C /usr/bin -xJf -
 
 WORKDIR /opt
-RUN curl -fsSLO https://github.com/emscripten-core/emsdk/archive/master.zip && unzip master.zip && rm master.zip
+RUN curl -fsSLO https://github.com/emscripten-core/emsdk/archive/main.zip && unzip main.zip && rm main.zip
 
-WORKDIR /opt/emsdk-master
+WORKDIR /opt/emsdk-main
 RUN ./emsdk install $EMSDK_VERSION && ./emsdk activate $EMSDK_VERSION
 ENV EMSDK_VERSION=$EMSDK_VERSION
 
