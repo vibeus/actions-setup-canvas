@@ -15,19 +15,12 @@ def build(platform, version, push):
 
 
 def main(args):
-    if args.all:
-        for p in PLATFORMS:
-            build(p, args.version, args.push)
-    else:
-        for p in args.platform:
-            build(p, args.version, args.push)
+    for p in args.platform:
+        build(p, args.version, args.push)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
-    parser.add_argument(
-        "-a", "--all", dest="all", action="store_true", help="build all"
-    )
     parser.add_argument(
         "-p", "--push", dest="push", action="store_true", help="push to remote"
     )
@@ -35,7 +28,7 @@ if __name__ == "__main__":
         "-v", "--version", dest="version", default="latest", help="image version"
     )
     parser.add_argument(
-        "platform", nargs="*", choices=PLATFORMS, help="platform(s) to build"
+        "platform", nargs="+", choices=PLATFORMS, help="platform(s) to build"
     )
 
     args = parser.parse_args()
